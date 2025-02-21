@@ -8,11 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "packageManager": "npm@11.1.0",
-  "overrides": {
-    "react": "$react",
-    "react-dom": "$react-dom"
-  },
+  "packageManager": "npm@10.5.2",
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.2",
     "@sanity/image-url": "^1.1.0",
