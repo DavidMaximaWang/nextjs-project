@@ -14,6 +14,7 @@ export const createPitch = async (state: any, form: FormData) => {
             status: 'ERROR'
         });
 
+        console.log('session:   ',JSON.stringify(session))
     const { title, description, category, link, pitch } = Object.fromEntries(Array.from(form));
 
     const slug = slugify(title as string, { lower: true, strict: true });

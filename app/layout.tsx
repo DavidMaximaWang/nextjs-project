@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const workSans = localFont({
@@ -67,6 +68,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={workSans.variable}>
         {children}
+        <Toaster/>
       </body>
     </html>
   );

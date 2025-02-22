@@ -1,38 +1,46 @@
 'use client';
 
 import React, { useActionState, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
 import { Send } from 'lucide-react';
 import { formSchema } from '@/lib/validation';
-import {z} from 'zod'
+import { z } from 'zod';
 import { createPitch } from '@/lib/action';
+import { useRouter } from 'next/navigation';
 
 const StartupForm = () => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [pitch, setPitch] = useState('');
+    const router = useRouter();
     const handleFormSubmit = async (prevState: any, formData: FormData) => {
-        try{
+        console.log("submittingggggsubmittingggggsubmittingggggsubmittinggggg")
+        try {
             const formValues = {
-                title: formData.get("title") as string,
-                description: formData.get("description") as string,
-                category: formData.get("category") as string,
-                link: formData.get("link") as string,
-                pitch: formData.get("pitch") as string
-            }
+                title: formData.get('title') as string,
+                description: formData.get('description') as string,
+                category: formData.get('category') as string,
+                link: formData.get('link') as string,
+                pitch: formData.get('pitch') as string
+            };
             await formSchema.parseAsync(formValues);
-            const result = await createPitch(prevState, formData)
-            console.log(result)
-        } catch(e) {
-
+            const result = await createPitch(prevState, formData);
+            if (result.status === 'SUCCESS') {
+                toast.success('Created a pitch');
+                router.push(`/startup/${result._id}`);
+            }
+            return result;
+        } catch (e) {
             if (e instanceof z.ZodError) {
                 const fieldErrors = e.flatten().fieldErrors;
-                setErrors(fieldErrors as unknown as Record<string, string>)
-                return {...prevState, error: 'Validation failed', status: 'ERROR'}
+                setErrors(fieldErrors as unknown as Record<string, string>);
+                toast.error('Validation failed');
+                return { ...prevState, error: 'Validation failed', status: 'ERROR' };
             }
-
-            return {...prevState, error: 'Unexpected errors', status: 'ERROR'}
+            toast.error('Unexpected errors');
+            return { ...prevState, error: 'Unexpected errors', status: 'ERROR' };
         }
     };
 
@@ -56,8 +64,7 @@ const StartupForm = () => {
                 <label htmlFor="description" className="startup-form_label">
                     Description
                 </label>
-                <Textarea id="description" name="description"
-                 className="startup-form_textarea" required placeholder="Startup Description" />
+                <Textarea id="description" name="description" className="startup-form_textarea" required placeholder="Startup Description" />
 
                 {errors.description && <p className="startup-form_error">{errors.description}</p>}
             </div>
