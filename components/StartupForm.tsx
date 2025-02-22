@@ -16,7 +16,6 @@ const StartupForm = () => {
     const [pitch, setPitch] = useState('');
     const router = useRouter();
     const handleFormSubmit = async (prevState: any, formData: FormData) => {
-        console.log("submittingggggsubmittingggggsubmittingggggsubmittinggggg")
         try {
             const formValues = {
                 title: formData.get('title') as string,
@@ -26,6 +25,7 @@ const StartupForm = () => {
                 pitch: formData.get('pitch') as string
             };
             await formSchema.parseAsync(formValues);
+            console.log('formValues', formValues)
             const result = await createPitch(prevState, formData);
             if (result.status === 'SUCCESS') {
                 toast.success('Created a pitch');
