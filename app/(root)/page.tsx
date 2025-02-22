@@ -16,7 +16,9 @@ export default async function Home({
     const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
 
     const session = await auth();
-    console.log('sessionid: ', session?.id);
+    if (!session || !session.id) {
+        return <div>Login to see cards</div>
+    }
 
     return (
         <>
