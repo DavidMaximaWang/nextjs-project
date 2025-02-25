@@ -14,7 +14,6 @@ import { notFound } from 'next/navigation';
 const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
     const id = (await params).id;
     const post = await client.fetch(STARTUP_BY_ID_QUERY, { id });
-
     if (!post) {
         return notFound();
     }
@@ -33,11 +32,23 @@ const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
                 <div className="space-y-5 mt-10 max-w-4xl mx-auto">
                     <div className="flex-between gap-5">
                         <Link href={`/user/${post.author?._id}`} className="flex gap-2 items-center mb-3">
-                        {Boolean(post?.author?.image) && <Image src={post.author.image} alt="avatar" width={64} height={64} className="rounded-full drop-shadow-lg" />}
-                            {false && <div>
-                                <p className="text-20-medium">{post.author.name }</p>
-                                <p className="text-16-medium !text-black-300">@{post.author.username}</p>
-                            </div>}
+                            {Boolean(post?.author?.image) && <Image src={post.author.image} alt="avatar" width={64} height={64} className="rounded-full drop-shadow-lg" />}
+                            {Boolean(post.author.name && post.author.username) ? (
+                                <div>
+                                    <p className="text-20-medium">
+                                        <span className="text-blue-500 hover:underline cursor-pointer">{post.author.name}</span>
+                                    </p>
+                                    <p className="text-16-medium !text-black-300">
+                                        <span className="text-blue-500 hover:underline cursor-pointer">@{post.author.username}</span>
+                                    </p>
+                                </div>
+                            ) : (
+                                <div>
+                                    <p className="text-20-medium">
+                                        <span className="text-blue-500 hover:underline cursor-pointer">Author: {post.author.email}</span>
+                                    </p>
+                                </div>
+                            )}
                         </Link>
 
                         <p className="category-tag">{post.category}</p>
@@ -52,8 +63,8 @@ const Startup = async ({ params }: { params: Promise<{ id: string }> }) => {
                 {/*  TODO: EDITOR SELECTED STARTUPS */}
 
                 <Suspense fallback={<Skeleton className="view_skeleton" />}>
-              <View id={id} />
-            </Suspense>
+                    <View id={id} />
+                </Suspense>
             </section>
         </>
     );

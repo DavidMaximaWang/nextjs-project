@@ -34,7 +34,7 @@ export const STARTUP_BY_ID_QUERY = defineQuery(`*[_type == "startup" && _id == $
   slug,
   _createdAt,
   author -> {
-    _id, name, username, image, bio
+    _id, name, username, image, bio, email
   },
   views,
   description,
