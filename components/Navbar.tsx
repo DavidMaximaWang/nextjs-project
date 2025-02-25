@@ -5,7 +5,6 @@ import { LogoutButton } from './Logout';
 
 const Navbar = async () => {
     const session = await auth();
-    console.log('nav bar: ', session && JSON.stringify(session.user))
     return (
         <div className="px-5 py-3 bg-white shadow-sm font-work-sans">
             <nav className="flex justify-between items-center">

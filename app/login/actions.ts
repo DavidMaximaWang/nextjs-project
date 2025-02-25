@@ -36,7 +36,6 @@ export const signInAction = async (prevState: any, formData: FormData) => {
         }
     } catch (error) {
         result.status = false;
-        console.log(error)
         result.errors.push('Username and password does not match or user does not exist!');
     }
 

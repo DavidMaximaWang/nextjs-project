@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useActionState, useEffect, useState } from 'react';
 import { signInAction, signInWithGithub } from './actions';
+import { PasswordFields } from './PasswordFields';
 
 const initState = {
     status: false,
@@ -12,31 +13,13 @@ const initState = {
 
 export function Login() {
     const [isRegistering, setIsRegistering] = useState(false);
-    const { data: session, status, update } = useSession();
-
-    const [formData, setFormData] = useState({
-        password: '',
-        repeatPassword: ''
-    });
+    const { data: session, status } = useSession();
     const [state, action] = useActionState(signInAction, initState);
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-    const isPasswordMatch = () => (isRegistering ? formData.password === formData.repeatPassword : true);
+    const [isPasswordValid, setIsPasswordValid] = useState(true);
 
     const router = useRouter();
 
-    const switchLogin = () => {
-        setIsRegistering(!isRegistering);
-    };
     useEffect(() => {
-
-        console.log(JSON.stringify(session))
         if (state.status || status === 'authenticated') {
             router.push('/');
         }
@@ -46,28 +29,25 @@ export function Login() {
         <>
             <div className="min-h-screen flex items-center justify-center p-4">
                 <div className="w-full max-w-md bg-white rounded-[30px] shadow-custom-top border-0 p-8 space-y-8">
-                    <h2 className="text-2xl font-normal">{!isRegistering ? `Sign In` : `Signin`}</h2>
+                    <h2 className="text-2xl font-normal">{!isRegistering ? `Sign In` : `Register`}</h2>
                     <form action={action} className="space-y-6">
                         <input type="email" name="email" placeholder="Email" className="w-full p-2 rounded-[30px] border border-gray-300" />
-                        <input type="password" name="password" value={formData.password} onChange={handleInputChange} placeholder="Password" className="w-full p-2 rounded-[30px] border border-gray-300" />
-                        {isRegistering ? <input type="password" name="repeatPassword" value={formData.repeatPassword} onChange={handleInputChange} placeholder="Repeat Password" className="w-full p-2 rounded-[30px] border border-gray-300" /> : <></>}
+                        <PasswordFields isRegistering={isRegistering} onValidityChange={setIsPasswordValid} />
                         {Boolean(state.errors.length) && (
                             <div className="text-red-500">
-                                {state.errors.map((error, i) => {
-                                    return (
-                                        <ul>
-                                            <li key={i}>{error}</li>
-                                        </ul>
-                                    );
-                                })}
+                                {state.errors.map((error, i) => (
+                                    <ul key={i}>
+                                        <li>{error}</li>
+                                    </ul>
+                                ))}
                             </div>
                         )}
-                        <button type="submit" className={`w-full p-2 rounded-[30px] text-white ${!isPasswordMatch() ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500'}`} disabled={!isPasswordMatch()}>
+                        <button type="submit" className={`w-full p-2 rounded-[30px] text-white ${!isPasswordValid ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500'}`} disabled={!isPasswordValid}>
                             {isRegistering ? 'Register' : 'Sign In'}
                         </button>
                     </form>
 
-                    <button onClick={switchLogin} className="text-blue-500 underline bg-transparent border-none p-0 cursor-pointer">
+                    <button onClick={() => setIsRegistering(!isRegistering)} className="text-blue-500 underline bg-transparent border-none p-0 cursor-pointer">
                         {!isRegistering ? `Register instead` : `Login instead`}
                     </button>
                     <form action={signInWithGithub}>
