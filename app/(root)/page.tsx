@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import SearchForm from "@/components/SearchForm";
 import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
-import { client } from "@/sanity/lib/client";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 
@@ -16,7 +15,8 @@ export default async function Home({
     const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
 
     const session = await auth();
-    if (!session || !session.id) {
+
+    if (!session || !session?.user?.email) {
         return <div>Login to see cards</div>
     }
 

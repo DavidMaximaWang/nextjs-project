@@ -1,10 +1,11 @@
+import { auth } from '@/auth';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
-import { auth, signOut, signIn } from '@/auth';
+import { LogoutButton } from './Logout';
 
 const Navbar = async () => {
     const session = await auth();
+    console.log('nav bar: ', session && JSON.stringify(session.user))
     return (
         <div className="px-5 py-3 bg-white shadow-sm font-work-sans">
             <nav className="flex justify-between items-center">
@@ -17,28 +18,15 @@ const Navbar = async () => {
                             <Link href="/startup/create">
                                 <span> Create</span>
                             </Link>
-                            <form
-                                action={async () => {
-                                    'use server';
-                                    await signOut({redirectTo: "/"});
-                                }}
-                            >
-                                <button type="submit"> Logout</button>
-                            </form>
-
-                            <Link href={`/user/${session?.id}`}>
-                                <span>{session?.user?.name}</span>
+                            <LogoutButton />
+                            <Link href={`/user/${session?.id || session?.user?.id}`}>
+                                <span>{session?.user?.email}</span>
                             </Link>
                         </>
                     ) : (
-                        <form
-                            action={async () => {
-                                'use server';
-                                await signIn('github');
-                            }}
-                        >
-                            <button type="submit">login</button>
-                        </form>
+                        <Link href={`/login`}>
+                            <span>Login</span>
+                        </Link>
                     )}
                 </div>
             </nav>
