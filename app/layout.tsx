@@ -1,8 +1,9 @@
+import { SessionSync } from "@/components/SessionSync";
 import type { Metadata } from "next";
+import { SessionProvider } from 'next-auth/react';
 import localFont from "next/font/local";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import { SessionProvider } from 'next-auth/react';
 
 const workSans = localFont({
   src: [
@@ -69,6 +70,7 @@ export default function RootLayout({
     <SessionProvider>
         <html lang="en">
         <body className={workSans.variable}>
+            <SessionSync />
             {children}
             <Toaster/>
         </body>
